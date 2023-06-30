@@ -1,4 +1,5 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import bcrypt from 'bcryptjs';
 
 @Table({ tableName: "students", underscored: false, modelName: 'Student', timestamps: false })
 export class Student extends Model<Student> {
@@ -20,6 +21,12 @@ export class Student extends Model<Student> {
     @Column(DataType.TEXT)
     email: string;
 
+    @Column(DataType.TEXT)
+    password: string;
+
+    @Column(DataType.TEXT)
+    token: string;
+    
     @Column({
         type: DataType.DATE,
         defaultValue: new Date() // sets default 
