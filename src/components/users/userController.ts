@@ -36,7 +36,6 @@ async function register(req:Request,res:Response) {
 async function login(req:Request,res:Response){
 try {
   const { email, password } = req.body;
-  console.log("email-password",email,password);
   
   const check_email = await Student.findOne({where:{email: email}})
 
@@ -61,23 +60,31 @@ try {
 }
 );
 
-
 } catch (error) {
   return res.json(error)
 }
 }
-module.exports = { register,login }
+
+async function getProfile(req: Request, res: Response){
+  try {
+    const user_id = req.headers.user_id
+    const user_data = await Student.findOne({where:{id:user_id}}) 
+    
+    if(user_data){
+      return res.json(user_data)
+    }
+    else{
+      return res.json({message:"User not found"})
+    }
+    
+  } catch (error) {
+    return res.json(error)
+  }
+}
+
+
+module.exports = { register,login,getProfile }
 
 
 
 
-// const token = jwt.sign(
-//   { user_id: data.id },
-//   'QWERTYUIOP',
-//   {
-//     expiresIn: "2h",
-//   }
-// );
-
-// data.token =token
-// // console.log("token",data);
