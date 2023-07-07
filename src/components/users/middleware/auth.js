@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const verifyToken = async (req, res, next) => {
     const bearerHeader = req.headers['authorization']
-    console.log("bearer",bearerHeader);
+
     if (typeof bearerHeader !== 'undefined') {
       const bearer = bearerHeader.split(' ')
       const token = bearer[1]
@@ -11,10 +11,8 @@ const verifyToken = async (req, res, next) => {
         if (err) {
           res.json({ message: 'Invalidate token' })
         } else {
-          console.log('user authdata', authData)
-          
           req.headers.user_id = authData.user_id
-          console.log("user_id",req.headers.user_id);
+  
           next()
         }
       })

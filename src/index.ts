@@ -3,7 +3,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const studentRoutes = require('../src/components/users/routes/studentRoute');
 import sequelizeInstance from './sequelize'; 
-
 const app = express();
 const port = 3000;
 
@@ -28,3 +27,4 @@ sequelizeInstance
   .catch((error: any) => {
     console.error('Unable to connect to the database:', error);
   });
+  
