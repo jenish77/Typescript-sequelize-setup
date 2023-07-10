@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const {redisClient }= require('../../../redis')
 
 const verifyToken = async (req, res, next) => {
     const bearerHeader = req.headers['authorization']
@@ -6,6 +7,11 @@ const verifyToken = async (req, res, next) => {
     if (typeof bearerHeader !== 'undefined') {
       const bearer = bearerHeader.split(' ')
       const token = bearer[1]
+
+      const isTokenBlacklisted = await redisClient.exists(`blacklist:${token}`);
+      if (isTokenBlacklisted) {
+        return res.status(401).json({ error: 'Token is blacklisted' });
+      }
   
       jwt.verify(token, 'QWERTYUIOP', (err, authData) => {
         if (err) {
