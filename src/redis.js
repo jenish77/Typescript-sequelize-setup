@@ -32,13 +32,34 @@
 
 
 // =========================
-const redis = require('redis');
+// const redis = require('redis');
 
-const redisClient = redis.createClient({});
+// const redisClient = redis.createClient({});
 
-redisClient.connect().then(()=> {
-    console.log("redis client is connected");
-}).catch(() => {
-    console.log("redis client is not connected");
-})
-export default redisClient;
+// redisClient.connect().then(()=> {
+//     console.log("redis client is connected");
+// }).catch(() => {
+//     console.log("redis client is not connected");
+// })
+// export default redisClient;
+
+
+// // Create a Redis client
+// const redis = require('redis');
+
+// // Create a Redis client
+// const redisClient = redis.createClient();
+
+// // Connect to Redis
+// redisClient.on('connect', () => {
+//   console.log('Redis client is connected');
+// });
+
+// // Handle Redis connection errors
+// redisClient.on('error', (err) => {
+//   console.error('Redis client error:', err);
+// });
+
+// // Export the Redis client
+// module.exports = redisClient;
+
