@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { Student } from "./models/student";
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
-const {redisClient }= require('../../redis')
+const redisClient = require('../../redis');
+
 // ================================
 // const redis = require('redis');
 // const redisClient = redis.createClient();

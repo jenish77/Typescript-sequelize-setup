@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {redisClient }= require('../../../redis')
+const redisClient = require('../../../redis');
 
 const verifyToken = async (req, res, next) => {
     const bearerHeader = req.headers['authorization']
