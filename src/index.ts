@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const studentRoutes = require('../src/components/users/routes/studentRoute');
 import sequelizeInstance from './sequelize'; 
 const app = express();
@@ -8,6 +9,11 @@ const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(cors({
+  origin: 'http://localhost:3001',
+}));
+
 
 app.use(morgan('dev'));
 
