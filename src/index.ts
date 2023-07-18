@@ -16,6 +16,7 @@ app.use(cors({
 
 
 app.use(morgan('dev'));
+app.use('/image', express.static('uploads/'))
 
 app.use('/api/student', studentRoutes);
 

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { Student } from "./models/student";
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
+const multer = require('multer')
+const path = require('path')
 const redisClient = require('../../redis');
 
 async function register(req: Request, res: Response) {
@@ -97,10 +99,38 @@ const logout = async (req: Request, res: Response) => {
 };
 
 
+async function uploadImage(req: Request, res: Response){
+  try {
+    const fileStorage = multer.diskStorage({
+      destination: 'uploads',
+      filename: (req:any, file:any, cb:any) => {
+      cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname)) },
+      })
+
+    const image_ = multer({
+      storage: fileStorage 
+    }).single("image");
+
+    image_(req, res, async (err: any) => {
+    
+        if (err) return res.json( { message: 'IMAGE_NOT_UPLOADED' });
+        if (!req.file) return res.json( { message: "please only image" });
+        const image_name = req.file.filename;
+
+        return res.json({
+            imageName: image_name,
+            imageurl:`http://localhost:3000/image/${req.file.filename}`,
+            message: 'IMAGE_UPLOADED'
+        });
+    });
+
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+}
 
 
-
-module.exports = { register, login, getProfile, logout }
+module.exports = { register, login, getProfile, logout, uploadImage }
 
 
 
