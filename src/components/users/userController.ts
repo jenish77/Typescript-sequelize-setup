@@ -129,27 +129,7 @@ async function uploadImage(req: Request, res: Response){
   }
 }
 
-// const passport = require('passport');//working
-// var userProfile;
-// async function googleLogin(req:Request,res:Response){
-//   try {
-//     const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-//     const GOOGLE_CLIENT_ID = 'our-google-client-id';
-//     const GOOGLE_CLIENT_SECRET = 'our-google-client-secret';
-//     passport.use(new GoogleStrategy({
-//         clientID: "21902610011-8tmanvjb7ldeo51h2sj50guhkme98ubd.apps.googleusercontent.com",
-//         clientSecret: "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",
-//         callbackURL: "http://localhost:3000/auth/google/callback"
-//       },
-//       function(profile, done) {
-//           userProfile=profile;
-//           return done(null, userProfile);
-//   }
-// ));
-//   } catch (error) {
-//     return res.status(500).send(error);
-//   }
-// }
+
 
 module.exports = { register, login, getProfile, logout, uploadImage }
 
