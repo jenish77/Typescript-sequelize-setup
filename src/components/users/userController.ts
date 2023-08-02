@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
 const multer = require('multer')
 const path = require('path')
+const Validator = require('validatorjs')
 const redisClient = require('../../redis');
 
 async function register(req: Request, res: Response) {
@@ -16,6 +17,45 @@ async function register(req: Request, res: Response) {
     const check_ = await Student.findOne({ where: { email: email } })
     if (check_) {
       return res.json({ message: "user already exists" })
+    }
+
+    const data_validation = {
+      first_name: first_name,
+      last_name: last_name,
+      user_name: user_name,
+      mobile: mobile,
+      email: email,
+      password: password,
+    }
+
+    const rules = {
+      first_name: 'required|string',
+      last_name: 'required|string',
+      user_name: 'required|string',
+      mobile: [
+        'required',
+        'regex:/^[0-9]{10}$/',
+      ],
+      email: 'required|string|email',
+      password: [
+        'required',
+        'regex:/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/',
+      ],
+    }
+
+    const validator = new Validator(data_validation, rules)
+    if (validator.fails()) {
+      let transformed:any = {}
+
+      Object.keys(validator.errors.errors).forEach(function (key, val) {
+        transformed[key] = validator.errors.errors[key][0]
+      })
+
+      const responseObject = {
+        status: 'false',
+        message: transformed,
+      }
+      return res.json(responseObject)
     }
 
     const data = await Student.create({
