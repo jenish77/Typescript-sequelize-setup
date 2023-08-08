@@ -9,15 +9,7 @@ const redisClient = require('../../redis');
 
 async function register(req: Request, res: Response) {
   try {
-    const { first_name, last_name, user_name, mobile, email, password } = req.body;
-
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
-
-    const check_ = await Student.findOne({ where: { email: email } })
-    if (check_) {
-      return res.json({ message: "user already exists" })
-    }
+   
 
     const data_validation = {
       first_name: first_name,
@@ -56,6 +48,16 @@ async function register(req: Request, res: Response) {
         message: transformed,
       }
       return res.json(responseObject)
+    }
+
+    const { first_name, last_name, user_name, mobile, email, password } = req.body;
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    const check_ = await Student.findOne({ where: { email: email } })
+    if (check_) {
+      return res.json({ message: "user already exists" })
     }
 
     const data = await Student.create({
