@@ -10,6 +10,7 @@ const redisClient = require('../../redis');
 async function register(req: Request, res: Response) {
   try {
    
+  const { first_name, last_name, user_name, mobile, email, password } = req.body;
 
     const data_validation = {
       first_name: first_name,
@@ -50,8 +51,7 @@ async function register(req: Request, res: Response) {
       return res.json(responseObject)
     }
 
-    const { first_name, last_name, user_name, mobile, email, password } = req.body;
-
+    
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
