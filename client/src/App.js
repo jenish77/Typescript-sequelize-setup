@@ -6,6 +6,7 @@ import Register from '../src/components/register';
 import Home from '../src/components/home';
 import Login from '../src/components/login';
 
+
 const AppRouter = () => {
   return (
     <Router>
@@ -13,6 +14,7 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        {/* <Route path="/googlelogin" element={<GoogleLogin />} /> */}
       </Routes>
     </Router>
   );

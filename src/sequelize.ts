@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Student } from '../src/components/users/models/student';
+import { Admin } from '../src/components/users/models/Admin';
 
 const sequelizeInstance = new Sequelize({
   host: "127.0.0.1",
@@ -11,5 +12,6 @@ const sequelizeInstance = new Sequelize({
 });
 
 sequelizeInstance.addModels([Student]);
+sequelizeInstance.addModels([Admin]);
 
 export default sequelizeInstance;

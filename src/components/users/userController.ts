@@ -6,6 +6,8 @@ const multer = require('multer')
 const path = require('path')
 const Validator = require('validatorjs')
 const redisClient = require('../../redis');
+const cron = require('node-cron');
+const nodemailer = require('nodemailer');
 
 async function register(req: Request, res: Response) {
   try {
@@ -68,6 +70,11 @@ async function register(req: Request, res: Response) {
       email: email,
       password: hashedPassword
     })
+    let OTP = Math.floor(1000 + Math.random() * 9000);
+      var subject = 'Verification';
+      cron.schedule("*/4 * * * *", function() {
+        EmailSend(email, subject, OTP);
+      });
 
     return res.json({ message: "User register successfully" })
 
@@ -171,9 +178,62 @@ async function uploadImage(req: Request, res: Response){
   }
 }
 
+async function EmailSend(email: any, subject: any, otp: any) {
+  try {
 
+      let transporter = nodemailer.createTransport({
+          // service: 'gmail',
+          host: 'smtp.gmail.com',//'smtp.gmail.com','smtp-relay.brevo.com'
+          port: 587, // or 587 for STARTTLS
+          secure: false, // use SSL/TLS
+          // tls: {
+          //     rejectUnauthorized: false,
+          // },
+          // host: "smtp.gmail.com",
+          // port: 587,
+          // secure: false, // use SSL
+          // pool: false,
+          auth: {
+              user: "imesta201@gmail.com",
+              pass: "ddcoapzvqmrgjsvd"
+          }
+      });
 
-module.exports = { register, login, getProfile, logout, uploadImage }
+      // Configure the email content
+      let mailOptions = {
+          from: '<noreply@farhadexchange.com>',
+          to: email,
+          subject: subject,
+          // text: `Your OTP is ${otp}`,
+          html: `<div style="padding: 20px; margin: 20px; background-color: #f5f5f5;">
+          <h3 style="margin-bottom: 20px;">Verification</h3>
+          <p>Please enter the below code to verify.</p>
+          <p style="font-size: 15px; font-weight: bold;">Your One Time Password (OTP) is: ${otp}</p>
+          <p>If you have not make a request, kindly ignore this email and do not share your OTP/Password with anyone.</p>
+          <p>Regards,<br>Jenish Maru.</p>
+        </div>`
+      };
+
+      // Send the email with OTP
+      transporter.sendMail(mailOptions, function (error: any, info: any) {
+          if (error) {
+              console.log('mail send error ==== ', error);
+          } else {
+              console.log('Email sent: ' + info.response);
+          }
+      });
+  }
+  catch (error) {
+    console.log("ERROR",error);
+    
+    // return res.status(500).send(error);
+      // logger.info("EmailSend");
+      // logger.info(error);
+      // return commonUtils.sendError(req, res, { "message":AppStrings[req.headers.lang as string ?? 'en'].SOMETHING_WRONG});
+  }
+}
+
+module.exports = { register, login, getProfile, logout, uploadImage, EmailSend }
 
 
 
