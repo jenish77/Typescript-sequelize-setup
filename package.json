@@ -2,39 +2,46 @@
   "name": "test",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "dev": "npm run development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenish77/Typescript-sequelize-setup.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jenish77/Typescript-sequelize-setup/issues"
+  },
+  "homepage": "https://github.com/jenish77/Typescript-sequelize-setup#readme",
   "dependencies": {
-    "@types/express": "^4.17.17",
     "@types/multer": "^1.4.7",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "http": "^0.0.1-security",
     "ioredis": "^5.3.2",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.4.2",
+    "mysql2": "^3.6.0",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.4",
-    "passport": "^0.6.0",
-    "passport-google-oauth": "^2.0.0",
+    "nodemon": "^3.0.1",
     "path": "^0.12.7",
-    "redis": "^4.6.7",
+    "redis": "^4.6.8",
     "sequelize-typescript": "^2.1.5",
+    "socket.io": "^4.7.2",
     "util": "^0.12.5",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "@types/node": "^20.4.0",
-    "nodemon": "^2.0.22"
+    "@types/express": "^4.17.17",
+    "@types/sequelize": "^4.28.15"
   }
 }

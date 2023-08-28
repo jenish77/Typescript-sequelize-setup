@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const studentRoutes = require('../src/components/users/routes/studentRoute');
 import sequelizeInstance from './sequelize'; 
+import http from 'http';
+import SocketHandler from './components/users/socketHandler';
+
 const app = express();
 const port = 3000;
 
@@ -20,6 +23,9 @@ app.use(morgan('dev'));
 app.use('/image', express.static('uploads/'))
 
 app.use('/api/student', studentRoutes);
+
+import { Server } from "socket.io";
+const io = new Server(3004);
 
 process.on('uncaughtException', (error, origin) => {
   console.log('----- Uncaught exception -----')
@@ -44,6 +50,7 @@ sequelizeInstance
 
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);
+      io.on("connection", SocketHandler.chatHandler)
     });
   })
   .catch((error: any) => {
