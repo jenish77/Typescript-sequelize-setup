@@ -14,6 +14,7 @@ async function chatHandler(client: Socket) {
     client.on("chat_message", (message) => {
       
       console.log('Received message:', message);
+      client.broadcast.emit("chat_message", message);
       // You can emit messages back to the client or perform other actions here
     });
   

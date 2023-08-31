@@ -89,7 +89,10 @@ async function login(req: Request, res: Response) {
 
     const check_email = await Student.findOne({ where: { email: email } })
 
-    if (!check_email) throw new Error('User are not register')
+    if (!check_email){
+      return res.json({message:"Enter valid credentials!"})
+    }
+    //  throw new Error('User are not register')
 
     if (!(email && (await bcrypt.compare(password, check_email.password)))) {
       return res.json({ message: "Enter valid credentials" })
@@ -104,11 +107,12 @@ async function login(req: Request, res: Response) {
       res.json({ mesage:"HERE" ,err});
     });
 
-  return res.json({token})
+  return res.json({status:true,data: token})
 
   }
   catch (err) {
-    console.log("Catch error", err);
+    return res.json({status:false, message:"Enter valid credentials!"})
+    // console.log("Catch error", err);
   }
 }
 
