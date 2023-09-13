@@ -24,6 +24,17 @@ export class Student extends Model<Student> {
     @Column(DataType.TEXT)
     password: string;
 
+    @Column({
+        type: DataType.TEXT,
+        get() {
+            let value: String = this.getDataValue('image');
+            if (value) {
+                return `http://localhost:3001`+'/image/' +  value;
+            }
+        }
+    })
+    image: string;
+
     @Column(DataType.TEXT)
     token: string;
     

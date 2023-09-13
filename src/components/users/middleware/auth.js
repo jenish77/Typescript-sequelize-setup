@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
 
       const isTokenBlacklisted = await redisClient.exists(`blacklist:${token}`);
       if (isTokenBlacklisted) {
-        return res.status(401).json({ error: 'Token is blacklisted' });
+        return res.status(401).json({ error: `Token is blacklisted` });
       }
   
       jwt.verify(token, 'QWERTYUIOP', (err, authData) => {

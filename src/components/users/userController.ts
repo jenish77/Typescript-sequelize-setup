@@ -70,11 +70,11 @@ async function register(req: Request, res: Response) {
       email: email,
       password: hashedPassword
     })
-    let OTP = Math.floor(1000 + Math.random() * 9000);
-      var subject = 'Verification';
-      cron.schedule("*/4 * * * *", function() {
-        EmailSend(email, subject, OTP);
-      });
+    // let OTP = Math.floor(1000 + Math.random() * 9000);
+    //   var subject = 'Verification';
+    //   cron.schedule("*/4 * * * *", function() {
+    //     EmailSend(email, subject, OTP);
+    //   });
 
     return res.json({ message: "User register successfully" })
 
@@ -135,6 +135,25 @@ async function getProfile(req: Request, res: Response) {
   }
 }   
 
+async function getAllProfile(req: Request, res: Response) {
+  try {
+    const user_id = req.headers.user_id
+    const token = req.headers.authorization?.split(' ')[1];
+  
+    const user_data = await Student.findAll()
+
+    if (user_data) {
+      return res.json(user_data)
+    }
+    else {
+      return res.json({ message: "User not found" })
+    }
+
+  } catch (error) {
+    return res.json(error)
+  }
+}   
+
 const logout = async (req: Request, res: Response) => {
 
   const token = req.headers.authorization?.split(' ')[1];
@@ -172,7 +191,7 @@ async function uploadImage(req: Request, res: Response){
 
         return res.json({
             imageName: image_name,
-            imageurl:`http://localhost:3000/image/${req.file.filename}`,
+            imageurl:`http://localhost:3001/image/${req.file.filename}`,
             message: 'IMAGE_UPLOADED'
         });
     });
@@ -237,7 +256,7 @@ async function EmailSend(email: any, subject: any, otp: any) {
   }
 }
 
-module.exports = { register, login, getProfile, logout, uploadImage, EmailSend }
+module.exports = { register, login, getProfile, logout, uploadImage, EmailSend, getAllProfile }
 
 
 
