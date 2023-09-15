@@ -2,12 +2,15 @@ import { Request, Response } from "express";
 import { Student } from "./models/student";
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
-const multer = require('multer')
+import multer, {FileFilterCallback} from 'multer'
 const path = require('path')
 const Validator = require('validatorjs')
 const redisClient = require('../../redis');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
+const sharp = require('sharp');
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+const fs = require('fs');
 
 async function register(req: Request, res: Response) {
   try {
@@ -170,6 +173,153 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
+const ffmpeg = require('fluent-ffmpeg'); // Import the fluent-ffmpeg library
+
+async function uploadVideo(req: Request, res: Response) {
+  try {
+    const fileStorage = multer.diskStorage({
+      destination: 'uploads',
+      filename: (req, file, cb) => {
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+      }
+    });
+
+    const fileFilter = (request:any, file:any, callback:any) => {
+      if (file.mimetype.startsWith('video/')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Upload only videos'), false);
+      }
+    };
+
+    const upload = multer({
+      storage: fileStorage,
+      fileFilter: fileFilter
+    }).single("video");
+
+    upload(req, res, async (err) => {
+      if (err) return res.json({ message: 'upload only videos' });
+      if (!req.file) return res.json({ message: "VIDEO_NOT_UPLOADED" });
+
+      const video_name = req.file.filename;
+
+      const inputPath = path.join('uploads', video_name);
+      const outputPath = path.join('uploads', 'compressed_' + video_name);
+
+      ffmpeg(inputPath)
+        .output(outputPath)
+        .videoCodec('libx264')
+        .audioCodec('aac')
+        .outputOptions([
+          '-b:v 500k',
+          '-b:a 128k'
+        ])
+        .on('end', async () => {
+          return res.json({
+            videoName: 'compressed_' + video_name,
+            videoUrl: `http://localhost:3001/image/compressed_${video_name}`,
+            message: 'VIDEO_UPLOADED'
+          });
+        })
+        .on('error', (err:any) => {
+          console.error('Error during video compression:', err);
+          return res.json({ message: 'Error during video compression' });
+        })
+        .run();
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.json({ error });
+  }
+}
+
+
+
+async function uploadPdf(req: Request, res: Response) {
+  try {
+    const fileStorage = multer.diskStorage({
+      destination: 'uploads',
+      filename: (req, file, cb) => {
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+      }
+    });
+
+    const fileFilter = (request:any, file:any, callback:any) => {
+      if (file.mimetype === 'application/pdf') {
+        callback(null, true); // Accept the file
+      } else {
+        callback(new Error('Upload only PDFs'), false); // Reject the file
+      }
+    };
+
+    const pdf_ = multer({
+      storage: fileStorage,
+      fileFilter: fileFilter
+    }).single("pdf");
+
+    pdf_(req, res, async (err) => {
+      if (err) return res.json({ message: 'upload only PDF' });
+      if (!req.file) return res.json({ message: "PDF_NOT_UPLOADED" });
+
+      const pdf_name = req.file.filename;
+
+      return res.json({
+        pdfName:  pdf_name,
+        pdfUrl: `http://localhost:3001/image/${pdf_name}`,
+        message: 'PDF_UPLOADED'
+      });
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.json({ error });
+  }
+}
+
+// async function uploadPdf(req: Request, res: Response) {
+//   try {
+//     const fileStorage = multer.diskStorage({
+//       destination: 'uploads',
+//       filename: (req: any, file: any, cb: any) => {
+//         cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+//       }
+//     });
+
+//     const fileFilter = (request: Request, file: Express.Multer.File, callback: (error: Error | null, acceptFile: boolean) => void) => {
+//       if (
+//         file.mimetype === 'application/pdf'
+//       ) {
+//         callback(null, true); // Accept the file
+//       } else {
+//         callback(new Error('Upload only PDFs'), false); // Reject the file
+//       }
+//     };
+
+//     const pdf_ = multer({
+//       storage: fileStorage,
+//       fileFilter: fileFilter
+//     }).single("pdf");
+
+//     pdf_(req, res, async (err) => {
+//       if (err) return res.json({ message: 'upload only PDF' });
+//       if (!req.file) return res.json({ message: "PDF_NOT_UPLOADED" });
+
+//         const pdf_name = req.file.filename;
+
+//             return res.json({
+//               pdfName: pdf_name,
+//               pdfUrl: `http://localhost:3001/image/${pdf_name}`,
+//               message: 'PDF_UPLOADED'
+//             });
+//           });
+
+//       } catch (error) {
+//         console.log(error)
+//         return res.json({error });
+//       }
+
+// }
 
 async function uploadImage(req: Request, res: Response){
   try {
@@ -179,21 +329,47 @@ async function uploadImage(req: Request, res: Response){
       cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname)) },
       })
 
+      const fileFilter = (request: Request,file: Express.Multer.File,callback: (error: Error | null, acceptFile: boolean)=> void) => {
+        // Check if the file is an image   
+        if (
+          file.mimetype === 'image/png' ||
+          file.mimetype === 'image/jpg' ||
+          file.mimetype === 'image/jpeg') {
+          callback(null, true); // Accept the file
+        } else { 
+          callback(new Error('Upload only images'), false); // Reject the file
+        }
+      };  
+
     const image_ = multer({
-      storage: fileStorage 
+      storage: fileStorage,
+      fileFilter: fileFilter,
+      // limits: {
+      //   fileSize: 1024 * 1024 * 2 // 5 MB (adjust as needed)
+      // } 
     }).single("image");
 
     image_(req, res, async (err: any) => {
+      // if (err) return res.json({ message: err });
+      // if (err) return res.json({ message: 'File too large' });
+      if (err) return res.json({message: 'upload only image' });
+      if (!req.file) return res.json({ message: "IMAGE_NOT_UPLOADED" });
     
-        if (err) return res.json( { message: 'IMAGE_NOT_UPLOADED' });
-        if (!req.file) return res.json( { message: "please only image" });
+      const imageBuffer = await sharp(req.file.path)
+          .resize({ width: 800, height: 600 })
+          .toBuffer();
+    
+      fs.writeFile(req.file.path, imageBuffer, (err:any) => {
+        if (err) return res.json({ message: 'Error compressing image' });
+    
         const image_name = req.file.filename;
-
+    
         return res.json({
-            imageName: image_name,
-            imageurl:`http://localhost:3001/image/${req.file.filename}`,
-            message: 'IMAGE_UPLOADED'
+          imageName: image_name,
+          imageurl: `http://localhost:3001/image/${req.file.filename}`,
+          message: 'IMAGE_UPLOADED'
         });
+      });
     });
 
   } catch (error) {
@@ -256,7 +432,7 @@ async function EmailSend(email: any, subject: any, otp: any) {
   }
 }
 
-module.exports = { register, login, getProfile, logout, uploadImage, EmailSend, getAllProfile }
+module.exports = { register, login, getProfile, logout, uploadImage, uploadPdf, uploadVideo, EmailSend, getAllProfile }
 
 
 
