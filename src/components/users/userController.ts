@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Student } from "./models/student";
+import { Category } from "./models/category";
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
 import multer, {FileFilterCallback} from 'multer'
@@ -9,6 +10,7 @@ const redisClient = require('../../redis');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const sharp = require('sharp');
+const ffmpeg = require('fluent-ffmpeg'); // Import the fluent-ffmpeg library
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 const fs = require('fs');
 
@@ -172,8 +174,6 @@ const logout = async (req: Request, res: Response) => {
     return res.status(500).send(error);
   }
 };
-
-const ffmpeg = require('fluent-ffmpeg'); // Import the fluent-ffmpeg library
 
 async function uploadVideo(req: Request, res: Response) {
   try {
@@ -432,7 +432,29 @@ async function EmailSend(email: any, subject: any, otp: any) {
   }
 }
 
-module.exports = { register, login, getProfile, logout, uploadImage, uploadPdf, uploadVideo, EmailSend, getAllProfile }
+async function addCategory(req: Request, res: Response) {
+  try {
+    const { category_name, image } = req.body
+    const add_category = await Category.create({ category_name:category_name, image:image })
+    return res.json({ message: "Category added successfully" })
+
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
+async function showCategory(req: Request, res: Response) {
+  try {
+    const all_category = await Category.findAll({})
+    return res.json(all_category)
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
+module.exports = { register, login, addCategory, showCategory, getProfile, logout, uploadImage, uploadPdf, uploadVideo, EmailSend, getAllProfile }
 
 
 

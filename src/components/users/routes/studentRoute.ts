@@ -12,6 +12,7 @@ router.put('/logout', auth,userController.logout)
 router.post('/upload-image', userController.uploadImage)
 router.post('/upload-file', userController.uploadPdf)
 router.post('/upload-video', userController.uploadVideo)
-
+router.post('/add-category',userController.addCategory)
+router.get('/show-category',userController.showCategory)
 
 module.exports = router;
