@@ -454,7 +454,54 @@ async function showCategory(req: Request, res: Response) {
   }
 }
 
-module.exports = { register, login, addCategory, showCategory, getProfile, logout, uploadImage, uploadPdf, uploadVideo, EmailSend, getAllProfile }
+async function editCategory(req: Request, res: Response){
+  try {
+    const { id, category_name } = req.body; 
+
+    // Find the category by its ID
+    const category = await Category.findByPk(id);
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    // Update the category_name
+    await category.update({ category_name });
+
+    return res.json({ message:"Category added successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
+async function deleteCategory(req: Request, res: Response) {
+  try {
+    const id:any = req.headers.id;
+    
+    await Category.destroy({where: {id: id}})
+    return res.json({ message:"Category deleted successfully" }); 
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
+module.exports = { 
+  register,
+  login,
+  addCategory,
+  showCategory,
+  editCategory,
+  getProfile,
+  logout,
+  uploadImage,
+  uploadPdf,
+  uploadVideo,
+  EmailSend,
+  getAllProfile,
+  deleteCategory
+}
 
 
 

@@ -13,6 +13,8 @@ router.post('/upload-image', userController.uploadImage)
 router.post('/upload-file', userController.uploadPdf)
 router.post('/upload-video', userController.uploadVideo)
 router.post('/add-category',userController.addCategory)
+router.post('/edit-category',userController.editCategory)
 router.get('/show-category',userController.showCategory)
+router.delete('/delete-category',userController.deleteCategory)
 
 module.exports = router;
