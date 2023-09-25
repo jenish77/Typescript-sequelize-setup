@@ -16,5 +16,6 @@ router.post('/add-category',userController.addCategory)
 router.post('/edit-category',userController.editCategory)
 router.get('/show-category',userController.showCategory)
 router.delete('/delete-category',userController.deleteCategory)
+router.post('/add-text',userController.addText)
 
 module.exports = router;

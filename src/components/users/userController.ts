@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Student } from "./models/student";
 import { Category } from "./models/category";
+import { Text } from "./models/text";
+
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
 import multer, {FileFilterCallback} from 'multer'
@@ -487,6 +489,17 @@ async function deleteCategory(req: Request, res: Response) {
   }
 }
 
+async function addText(req: Request, res: Response) {
+  try {
+    const { text, category_id } = req.body
+    const add_text = await Text.create({ text:text, category_id:category_id })
+    return res.json({ message: "Text added successfully" })
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
 module.exports = { 
   register,
   login,
@@ -500,7 +513,8 @@ module.exports = {
   uploadVideo,
   EmailSend,
   getAllProfile,
-  deleteCategory
+  deleteCategory,
+  addText
 }
 
 
