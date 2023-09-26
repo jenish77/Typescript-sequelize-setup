@@ -15,6 +15,8 @@ router.post('/upload-video', userController.uploadVideo)
 router.post('/add-category',userController.addCategory)
 router.post('/edit-category',userController.editCategory)
 router.get('/show-category',userController.showCategory)
+router.get('/show-category-by-id',userController.showCategoryById)
+router.get('/get-text-by-id',userController.getTextById)
 router.delete('/delete-category',userController.deleteCategory)
 router.post('/add-text',userController.addText)
 

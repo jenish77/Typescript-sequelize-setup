@@ -455,6 +455,16 @@ async function showCategory(req: Request, res: Response) {
     return res.json(error)
   }
 }
+async function showCategoryById(req: Request, res: Response) {
+  try {
+    const id = Number(req.query.id); 
+    const all_category = await Category.findOne({where: {id: id}})
+    return res.json(all_category)
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
 
 async function editCategory(req: Request, res: Response){
   try {
@@ -500,6 +510,17 @@ async function addText(req: Request, res: Response) {
   }
 }
 
+async function getTextById(req: Request, res: Response){
+  try {
+    const id = Number(req.query.id); 
+    const get_text = await Text.findAll({where:{category_id:id}})
+    return res.json({ get_text })
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
 module.exports = { 
   register,
   login,
@@ -514,6 +535,8 @@ module.exports = {
   EmailSend,
   getAllProfile,
   deleteCategory,
+  showCategoryById,
+  getTextById,
   addText
 }
 
