@@ -12,6 +12,8 @@ const redisClient = require('../../redis');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const sharp = require('sharp');
+const Stripe_key = "sk_test_51NvaMuBhSobiWFQoc49L6U8jstFeQdMfs5Nc1PzOVt7riF7IZHZ6YE2qqMOpNwSLdbPg0U2WU6HZ4pGI7ZoY65nK00JwGNXrtg"
+const stripe = require("stripe")(Stripe_key)
 const ffmpeg = require('fluent-ffmpeg'); // Import the fluent-ffmpeg library
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 const fs = require('fs');
@@ -521,6 +523,80 @@ async function getTextById(req: Request, res: Response){
   }
 }
 
+async function createNewCustomer(req: Request, res: Response){
+  try {
+    const customer = await stripe.customers.create({
+      name:req.body.name,
+      email:req.body.email 
+    })
+    return res.json({ customer })
+  } catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
+// async function addNewCard(req: Request, res: Response) {
+//   try {
+//     console.log('body',req.body);
+    
+//     const { customer_id, card_name, card_expyear, card_expmonth, card_number, card_cvc} = req.body
+//     const card_token = await stripe.tokens.create({
+//       card: {
+//         // name: card_name,
+//         number: card_number,
+//         exp_month: card_expmonth,
+//         exp_year: card_expyear,
+//         cvc: card_cvc
+//       }
+//     });  
+      
+
+//     const card = await stripe.customers.createSource(customer_id, {
+//       source: `${card_token.id}`
+//     });
+
+//     return res.json({ card: card.id });
+
+//   } catch (error) {
+//     console.log("MOTI ERROR",error);
+//     return res.json(error)
+//   }
+// }
+async function addNewCard(req: Request, res: Response) {
+  try {
+    const { customer_id, card_name, card_expyear, card_expmonth, card_number, card_cvc, card_token } = req.body;
+
+    const card = await stripe.customers.createSource(customer_id, {
+      source: card_token
+    });
+
+    return res.json({ card: card.id });
+  } catch (error) {
+    console.log("Error adding card:", error);
+    return res.json(error);
+  }
+}
+
+async function charges(req: Request, res: Response){
+  try {
+    const { amount, currency, source, description } = req.body;
+
+    const charge = await stripe.charges.create({
+      amount: amount*100,
+      currency: currency,
+      source: source,
+      description: description 
+    })
+
+    return res.json({ "message":charge.receipt_url });
+
+  } catch (error) {
+    console.log("Error adding card:", error);
+    return res.json(error);
+  }
+}
+
 module.exports = { 
   register,
   login,
@@ -537,6 +613,9 @@ module.exports = {
   deleteCategory,
   showCategoryById,
   getTextById,
+  createNewCustomer,
+  addNewCard,
+  charges,
   addText
 }
 

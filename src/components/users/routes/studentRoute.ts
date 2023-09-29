@@ -19,5 +19,8 @@ router.get('/show-category-by-id',userController.showCategoryById)
 router.get('/get-text-by-id',userController.getTextById)
 router.delete('/delete-category',userController.deleteCategory)
 router.post('/add-text',userController.addText)
+router.post('/create-customer',userController.createNewCustomer)
+router.post('/add-card',userController.addNewCard)
+router.post('/charges',userController.charges)
 
 module.exports = router;

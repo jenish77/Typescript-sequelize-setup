@@ -20,9 +20,11 @@
   "homepage": "https://github.com/jenish77/Typescript-sequelize-setup#readme",
   "dependencies": {
     "@mui/icons-material": "^5.14.9",
+    "@stripe/stripe-js": "^2.1.6",
     "@types/multer": "^1.4.7",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fluent-ffmpeg": "^2.1.2",
     "fs": "^0.0.1-security",
@@ -46,6 +48,7 @@
     "sequelize-typescript": "^2.1.5",
     "sharp": "^0.32.5",
     "socket.io": "^4.7.2",
+    "stripe": "^13.7.0",
     "util": "^0.12.5",
     "validatorjs": "^3.22.1",
     "zlib": "^1.0.5"
