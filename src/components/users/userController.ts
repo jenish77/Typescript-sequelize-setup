@@ -597,6 +597,25 @@ async function charges(req: Request, res: Response){
   }
 }
 
+async function sendSMS(req: Request, res: Response){
+  const accountSid = 'ACed54d058557027bfc2e124f2faa49632';
+  const authToken = 'a70632f4216d3654e23efb3231707ae3';
+  const { message,phone } = req.body
+  try {
+    const client = require('twilio')(accountSid, authToken);
+    client.messages.create({
+       body: message,
+       from: '+16179368206',
+       to: phone
+     })
+     return res.json({ "message":"message send successfull." });
+  } 
+catch (error) {
+    console.log(error);
+    return res.json(error)
+  }
+}
+
 module.exports = { 
   register,
   login,
@@ -616,6 +635,7 @@ module.exports = {
   createNewCustomer,
   addNewCard,
   charges,
+  sendSMS,
   addText
 }
 
