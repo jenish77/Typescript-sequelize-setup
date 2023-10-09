@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { Student } from "./models/student";
 import { Category } from "./models/category";
 import { Text } from "./models/text";
+import { Role } from "./models/role";
+import { Permission } from "./models/permission";
+import { Rolehaspermission } from "./models/roleHasPermission";
+
 
 var jwt = require('jsonwebtoken');
 import bcrypt from 'bcryptjs';
@@ -504,6 +508,8 @@ async function deleteCategory(req: Request, res: Response) {
 async function addText(req: Request, res: Response) {
   try {
     const { text, category_id } = req.body
+    console.log("texttexttext",text);
+    
     const add_text = await Text.create({ text:text, category_id:category_id })
     return res.json({ message: "Text added successfully" })
   } catch (error) {
@@ -597,6 +603,40 @@ async function charges(req: Request, res: Response){
   }
 }
 
+async function addRole(req: Request, res: Response) {
+  try {
+    const { name } = req.body
+    const data = await Role.create({name:name});
+    return res.json({ "message":"role added successfully" });
+  } catch (error) {
+    console.log("Error adding card:", error);
+    return res.json(error);
+  }
+}
+
+async function addPermission(req: Request, res: Response) {
+    try {
+      const data = await Permission.create({name:req.body.name});
+      return res.json({ "message":"permission added successfully" });
+    } catch (error) {
+      console.log("Error adding card:", error);
+    return res.json(error);
+    }
+}
+
+async function rolePermission(req: Request, res: Response){
+  try {
+    const { role_id, permission_id } = req.body
+
+    const add_data = await Rolehaspermission.create({ role_id:role_id, permission_id:permission_id })
+    return res.json({ "message":"role and permission added successfully" });
+
+  } catch (error) {
+    console.log("Error adding card:", error);
+    return res.json(error);
+  }
+}
+
 async function sendSMS(req: Request, res: Response){
   const accountSid = 'ACed54d058557027bfc2e124f2faa49632';
   const authToken = 'a70632f4216d3654e23efb3231707ae3';
@@ -636,6 +676,9 @@ module.exports = {
   addNewCard,
   charges,
   sendSMS,
+  addRole,
+  addPermission,
+  rolePermission,
   addText
 }
 

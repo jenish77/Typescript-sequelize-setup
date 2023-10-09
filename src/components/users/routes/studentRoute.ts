@@ -23,5 +23,8 @@ router.post('/create-customer',userController.createNewCustomer)
 router.post('/add-card',userController.addNewCard)
 router.post('/charges',userController.charges)
 router.post('/send-sms',userController.sendSMS)
+router.post('/add-role',userController.addRole)
+router.post('/add-permission',userController.addPermission)
+router.post('/role-has-permission',userController.rolePermission)
 
 module.exports = router;
