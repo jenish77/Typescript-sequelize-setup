@@ -24,7 +24,7 @@ const verifyToken = async (req, res, next) => {
       })
     } else {
       res.json({
-        result: 'Tokenn is not valid',
+        result: 'Tokenn is Required',
       })
     }
   }
