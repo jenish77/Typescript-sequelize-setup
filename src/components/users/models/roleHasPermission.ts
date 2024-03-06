@@ -13,13 +13,13 @@ export class Rolehaspermission extends Model<Rolehaspermission> {
     
     @Column({
         type: DataType.DATE,
-        defaultValue: new Date() // sets default 
+        defaultValue: new Date()  
     })
     createdAt: Date | any;
 
     @Column({
         type: DataType.DATE,
-        defaultValue: new Date() // sets default 
+        defaultValue: new Date() 
     })
     updatedAt: Date | any;
   }

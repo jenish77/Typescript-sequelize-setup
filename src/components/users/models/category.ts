@@ -22,13 +22,13 @@ export class Category extends Model<Category> {
 
     @Column({
         type: DataType.DATE,
-        defaultValue: new Date() // sets default 
+        defaultValue: new Date() 
     })
     createdAt: Date | any;
 
     @Column({
         type: DataType.DATE,
-        defaultValue: new Date() // sets default 
+        defaultValue: new Date() 
     })
     updatedAt: Date | any;
   }
