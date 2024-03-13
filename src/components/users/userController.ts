@@ -83,11 +83,11 @@ async function register(req: Request, res: Response) {
       email: email,
       password: hashedPassword
     })
-    // let OTP = Math.floor(1000 + Math.random() * 9000);
-    //   var subject = 'Verification';
-    //   cron.schedule("*/4 * * * *", function() {
-    //     EmailSend(email, subject, OTP);
-    //   });
+    let OTP = Math.floor(1000 + Math.random() * 9000);
+      var subject = 'Verification';
+      cron.schedule("*/4 * * * *", function() {
+        EmailSend(email, subject, OTP);
+      });
 
     return res.json({ message: "User register successfully" })
 
