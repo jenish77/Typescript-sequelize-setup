@@ -13,5 +13,5 @@ This project is a starter template for setting up a TypeScript-based project wit
 ### 1. Clone the repository
 
 ```sh
-git clone https://github.com/your-username/typescript-sequelize-setup.git
+git clone https://github.com/jenish77/typescript-sequelize-setup.git
 cd typescript-sequelize-setup
